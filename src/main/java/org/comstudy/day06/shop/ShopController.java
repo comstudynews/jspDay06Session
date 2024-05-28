@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @WebServlet("/shop/*")
 public class ShopController extends HttpServlet {
@@ -62,8 +63,17 @@ public class ShopController extends HttpServlet {
 				viewName = "shop/productDetail";
 			}  else if("/shop/cart_add.do".equals(urlPattern)) {
 				int seq = Integer.parseInt(req.getParameter("seq"));
+				int ea = Integer.parseInt(req.getParameter("ea"));
+				
+				System.out.println("seq => " + seq);
+				System.out.println("ea => " + ea);
+				
 				ProductDTO product = dao.findBySeq(seq);
+				ProductDTO newProduct = (ProductDTO)product.clone();
+				newProduct.setEa(ea);
 				// 장바구니에 상품을 추가하고 새로고침
+				HttpSession session = req.getSession();
+				
 				viewName = "redirect:cart.do";
 			}
 		}

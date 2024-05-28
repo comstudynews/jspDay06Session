@@ -23,10 +23,31 @@
 	<tr>
 		<th>메이커</th><td>${product.maker }</td>
 	</tr>
+	<tr>
+		<th>수량</th>
+		<td>
+			<select id="ea">
+				<option value="1">1</option>
+				<option value="1">2</option>
+				<option value="1">3</option>
+				<option value="1">4</option>
+				<option value="1">5</option>
+			</select>
+		</td>
+	</tr>
 </table>
-<a href="list.do">상품 목록</a>
-<a href="cart.do">장바구니 목록</a>
-<a href="cart_add.do?seq=${product.seq }">장바구니에 추가</a>
+
+<script>
+	var eaElement = document.getElementById("ea");
+	function addCartFn(btn) {
+		var ea = eaElement.value;
+		var url = "cart_add.do?seq="+ btn.dataset.seq +"&ea="+ea;
+		location.href = url;
+	}
+</script>
+<a href="list.do">상품목록</a> | 
+<a href="cart.do">장바구니목록</a> | 
+<button data-seq="${product.seq }" onclick="addCartFn(this)">카트에추가</button>
 
 </body>
 </html>

@@ -85,4 +85,9 @@ public class ProductDTO {
 		ProductDTO other = (ProductDTO) obj;
 		return seq == other.seq;
 	}
+	
+	public ProductDTO clone() {
+		ProductDTO product  = new ProductDTO(seq, title, price, maker, ea);
+		return product;
+	}
 }
