@@ -1,4 +1,4 @@
-package org.comstudy.day06;
+package org.comstudy.day06.member;
 
 import java.io.IOException;
 
