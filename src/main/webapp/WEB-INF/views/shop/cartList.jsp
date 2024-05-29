@@ -19,8 +19,9 @@ int priceTotal = 0;
 <tbody>
 <c:forEach var="product" items="${cartList }">
 	<%
-		eaTotal += 0;
-		priceTotal += 0;
+		ProductDTO product = (ProductDTO) pageContext.getAttribute("product");
+		eaTotal += product.getEa();
+		priceTotal += product.getPrice() * product.getEa();
 	%>
 	<tr>
 		<td><c:out value="${product.seq }"></c:out></td>
