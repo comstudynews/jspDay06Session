@@ -7,6 +7,17 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script>
+function removeCartFn(btn) {
+	var seq = btn.dataset.seq;
+	var url = "cart_remove.do?seq=" + seq;
+	location.href = url;
+}
+
+window.onload = function() {
+	
+}
+</script>
 </head>
 <body>
 
@@ -25,10 +36,10 @@ int priceTotal = 0;
 	%>
 	<tr>
 		<td><c:out value="${product.seq }"></c:out></td>
-		<td><a href="detail.do?seq=${product.seq }">${product.title }</a></td>
+		<td width="300"><a href="detail.do?seq=${product.seq }">${product.title }</a></td>
 		<td><c:out value="${product.ea }"></c:out></td>
-		<td><c:out value="${product.price }"></c:out></td>
-		<td><button>카트에서 제거</button></td>
+		<td><c:out value="${product.price * product.ea }"></c:out></td>
+		<td><button data-seq="${product.seq }" onclick="removeCartFn(this)">카트에서 제거</button></td>
 	</tr>
 </c:forEach>
 </tbody>
@@ -41,6 +52,6 @@ int priceTotal = 0;
 		</tr>
 	</tfoot>
 </table>
-
+<a href="list.do">상품목록</a>
 </body>
 </html>

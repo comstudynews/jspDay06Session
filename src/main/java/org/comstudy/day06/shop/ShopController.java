@@ -71,7 +71,7 @@ public class ShopController extends HttpServlet {
 				ProductDTO product = dao.findBySeq(seq);
 				req.setAttribute("product", product);
 				viewName = "shop/productDetail";
-			}  else if("/shop/cart_add.do".equals(urlPattern)) {
+			} else if("/shop/cart_add.do".equals(urlPattern)) {
 				int seq = Integer.parseInt(req.getParameter("seq"));
 				int ea = Integer.parseInt(req.getParameter("ea"));
 				
@@ -88,8 +88,29 @@ public class ShopController extends HttpServlet {
 				if(cartList == null) {
 					cartList = new ArrayList<ProductDTO>();
 				}
-				cartList.add(newProduct);
+				// 만약 기존에 같은 seq가 cartList있다면 ea만 누적
+				int index = cartList.indexOf(new ProductDTO(seq));
+				if(index != -1) {
+					int sum = cartList.get(index).getEa()+ea;
+					cartList.get(index).setEa(sum);
+				} else {					
+					cartList.add(newProduct);
+				}
 				session.setAttribute("cartList", cartList);
+				
+				viewName = "redirect:cart.do";
+			} else if("/shop/cart_remove.do".equals(urlPattern)) {
+				int seq = Integer.parseInt(req.getParameter("seq"));
+				
+				HttpSession session = req.getSession();
+				List<ProductDTO> cartList = (List<ProductDTO>)session.getAttribute("cartList");
+				if(cartList != null) {
+					// seq가 일치하는 index를 cartList에서 찾아서 remove한다.
+					int index = cartList.indexOf(new ProductDTO(seq));
+					if(index != -1) {
+						cartList.remove(index);
+					}
+				}
 				
 				viewName = "redirect:cart.do";
 			}

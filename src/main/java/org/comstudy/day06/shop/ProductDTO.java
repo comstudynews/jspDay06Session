@@ -14,6 +14,10 @@ public class ProductDTO {
 		// 널포인터 예외 발생 방지용 초기 값 설정
 		this(0,"",0,"",0);
 	}
+	
+	public ProductDTO(int seq) {
+		this(seq,"",0,"",0);
+	}
 
 	public ProductDTO(int seq, String title, int price, String maker, int ea) {
 		this.seq = seq;
