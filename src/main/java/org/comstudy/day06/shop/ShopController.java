@@ -1,9 +1,12 @@
 package org.comstudy.day06.shop;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,12 +17,19 @@ import javax.servlet.http.HttpSession;
 @WebServlet("/shop/*")
 public class ShopController extends HttpServlet {
 	
+	private ServletContext context;
+	
 	private String viewName = "";
 	private String prefix = "/WEB-INF/views/";
 	private String suffix = ".jsp";
 	
 	ProductDAO dao = new ProductDAOImpl();
 	
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		context = config.getServletContext();
+	}
+
 	protected void dispatcher(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if(viewName.indexOf("redirect:") == 0) {
 			response.sendRedirect(viewName.substring("redirect:".length()));
@@ -42,7 +52,7 @@ public class ShopController extends HttpServlet {
 		int beginIndex = ctxPath.length();
 		String urlPattern = reqUri.substring(beginIndex);
 		
-		System.out.println("Url Pattern : " + urlPattern);
+		context.log("Url Pattern : " + urlPattern);
 		
 		if("POST".equals(req.getMethod() ) ) {
 			// 상품 등록, 수정, 삭제 등의 기능
@@ -65,14 +75,21 @@ public class ShopController extends HttpServlet {
 				int seq = Integer.parseInt(req.getParameter("seq"));
 				int ea = Integer.parseInt(req.getParameter("ea"));
 				
-				System.out.println("seq => " + seq);
-				System.out.println("ea => " + ea);
-				
 				ProductDTO product = dao.findBySeq(seq);
 				ProductDTO newProduct = (ProductDTO)product.clone();
 				newProduct.setEa(ea);
 				// 장바구니에 상품을 추가하고 새로고침
 				HttpSession session = req.getSession();
+				context.log(newProduct.toString());
+				
+				// session에 기존 cartList가 있다면 그것을 활용
+				List<ProductDTO> cartList = (List<ProductDTO>)session.getAttribute("cartList");
+				// 만약 없다면 새 cartList를 생성 한다.
+				if(cartList == null) {
+					cartList = new ArrayList<ProductDTO>();
+				}
+				cartList.add(newProduct);
+				session.setAttribute("cartList", cartList);
 				
 				viewName = "redirect:cart.do";
 			}
